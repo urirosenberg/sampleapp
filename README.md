@@ -1,2 +1,2 @@
-This is a sample Python application that integrates with AppDirect and can be run on
+This is a sample Python application that integrates with
 Google App Engine.

@@ -1,0 +1,16 @@
+<html>
+  <body>
+    <h4>Welcome to the AppDirect OMSS Python Sample Application</h4>
+    
+    <div>User: <b>{{ appUser.first}} {{ appUser.last }}</b> ({{ appUser.email }})</div>
+    <div>Company: <b>{{ companyName }}</b></div>
+    <div>Edition: <i>{{ edition }}</i></div>
+    <h4>Users in {{ companyName }}</h4>
+    <ul>
+    {% for user in appUsers %}
+      <li>{{ user.email }}</li>
+    {% endfor %}
+    </ul>
+    <div><a href="{{ logoutUrl }}">Logout</a></div>
+  </body>
+</html>

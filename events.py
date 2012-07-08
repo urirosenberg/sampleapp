@@ -20,8 +20,10 @@ from marshall import EventXml
 from google.appengine.api.datastore_errors import BadArgumentError
 from xml.dom import minidom
 
-consumer_key = 'sample-service-2744'
-consumer_secret = '41-_GHQWg5tHmyKN'
+consumer_key = ###############
+consumer_secret = ##################
+service_api_URL= ################
+logger_URL='URL'
 eventUrlTemplate = "https://www.appdirect.com/rest/api/events/%s";
 
 errorTemplate = """
@@ -62,7 +64,7 @@ def omssLogger(logKey,logMessage):
    logging.info("omss logger called")
    o_headers = {"Accept": "text/plain"}
    logMessage = logMessage.replace(" ", "_")
-   url2 = "http://logger.dev.omss.cso.att.com/v0/log/?host=omssssampleapp.appspot.com&oper=log/"+logKey+"/"+logMessage
+   url2 = logging_UR+logKey+"/"+logMessage
    logging.info(url2)
    response = urlfetch.fetch(url2,payload=None,method=urlfetch.GET,headers={},deadline=10,validate_certificate=None)
    logging.info(response.status_code)
@@ -73,7 +75,7 @@ def omssServiceproviders():
    form_fields = {"identifier":"sp5","name":"Service Provider five"}
    params =  urllib.urlencode(form_fields)
    o_headers = {"Content-type": "application/json","Accept": "application/json"}
-   url2 = "http://75.62.61.33:8080/omssprov/serviceproviders"
+   url2 =service_api_URL 
    response = urlfetch.fetch(url = url2,payload=params,method=urlfetch.POST,headers=o_headers)
    logging.info(response.status_code) 
    logging.info(response.content) 

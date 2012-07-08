@@ -1,2 +1,3 @@
-This is a sample Python application that integrates with
-Google App Engine.
+This is a sample AppDirect Python application that runs on Google app engine.
+Deployment:
+Install Google app engine SDK 

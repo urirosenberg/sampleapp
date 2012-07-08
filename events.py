@@ -3,6 +3,10 @@
 import cgi
 import logging
 import oauth2
+import urllib2
+import urllib
+import httplib
+from google.appengine.api import urlfetch
 
 from google.appengine.dist import use_library
 use_library('django', '1.2')
@@ -16,8 +20,8 @@ from marshall import EventXml
 from google.appengine.api.datastore_errors import BadArgumentError
 from xml.dom import minidom
 
-consumer_key = 'openam-2721'
-consumer_secret = 'bjDIvVPDNzkQeLuq'
+consumer_key = 'sample-service-2744'
+consumer_secret = '41-_GHQWg5tHmyKN'
 eventUrlTemplate = "https://www.appdirect.com/rest/api/events/%s";
 
 errorTemplate = """
@@ -27,6 +31,8 @@ errorTemplate = """
    <message>%s</message>
 </result>
 """
+
+
 
 successMessage = """<result><success>true</success></result>"""
 
@@ -51,8 +57,33 @@ def FetchEvent(token):
         event.put()
         return errorTemplate % ( "UNKNOWN_ERROR", message)
 
+
+def omssLogger(logKey,logMessage):
+   logging.info("omss logger called")
+   o_headers = {"Accept": "text/plain"}
+   logMessage = logMessage.replace(" ", "_")
+   url2 = "http://logger.dev.omss.cso.att.com/v0/log/?host=omssssampleapp.appspot.com&oper=log/"+logKey+"/"+logMessage
+   logging.info(url2)
+   response = urlfetch.fetch(url2,payload=None,method=urlfetch.GET,headers={},deadline=10,validate_certificate=None)
+   logging.info(response.status_code)
+
+
+def omssServiceproviders():
+   logging.info("serviceproviders api called")
+   form_fields = {"identifier":"sp5","name":"Service Provider five"}
+   params =  urllib.urlencode(form_fields)
+   o_headers = {"Content-type": "application/json","Accept": "application/json"}
+   url2 = "http://75.62.61.33:8080/omssprov/serviceproviders"
+   response = urlfetch.fetch(url = url2,payload=params,method=urlfetch.POST,headers=o_headers)
+   logging.info(response.status_code) 
+   logging.info(response.content) 
+
+
+
 def HandleEvent(eventXml):    
-    logging.info("Recevied event type %s" % eventXml.eventType)
+    logMessage = ("Recevied event type %s" % eventXml.eventType)  
+    logging.info(logMessage)
+    omssLogger("info",logMessage) 
     if eventXml.eventType == "SUBSCRIPTION_ORDER":
         return CreateOrder(eventXml)
     elif eventXml.eventType == "SUBSCRIPTION_CHANGE":
@@ -94,6 +125,7 @@ def CreateOrder(eventXml):
                                         eventXml.payload.company.website,\
                                         eventXml.payload.order.edition))
     companySubscription = eventXml.payload.CreateSubscription()
+    omssServiceproviders()
     companySubscription.put()
     creator = eventXml.creator.CreateUserModel(companySubscription)
     creator.put()
